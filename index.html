@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexis Premium - Gestão Financeira Empresarial</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --bg-principal: #f8f9fa;
+            --bg-card: #ffffff;
+            --texto-principal: #1a1a1a;
+            --texto-secundario: #6c757d;
+            --dourado: #c5a880;
+            --dourado-hover: #b39266;
+            --sucesso: #2ec4b6;
+            --erro: #e71d36;
+            --borda: rgba(0, 0, 0, 0.05);
+            --sombra: 0 8px 30px rgba(0, 0, 0, 0.05);
+            --transicao: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        [data-theme="dark"] {
+            --bg-principal: #0a0a0a;
+            --bg-card: #141414;
+            --texto-principal: #f8f9fa;
+            --texto-secundario: #a0a0a0;
+            --borda: rgba(255, 255, 255, 0.05);
+            --sombra: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-principal);
+            color: var(--texto-principal);
+            transition: var(--transicao);
+            padding-bottom: 80px;
+            overflow-x: hidden;
+        }
+
+        header {
+            background: var(--bg-card);
+            padding: 20px;
+            border-bottom: 1px solid var(--borda);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background: rgba(var(--bg-card), 0.8);
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.4rem;
+            letter-spacing: -0.5px;
+        }
+
+        .logo .nome-preto {
+            color: var(--texto-principal);
+        }
+
+        .logo .nome-dourado {
+            color: var(--dourado);
+        }
+
+        .top-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .btn-theme, .btn-notif, .btn-settings {
+            background: none;
+            border: 1px solid var(--borda);
+            color: var(--texto-principal);
+            padding: 10px;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transicao);
+            font-size: 1.2rem;
+        }
+
+        .btn-theme:hover, .btn-notif:hover, .btn-settings:hover {
+            border-color: var(--dourado);
+            color: var(--dourado);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .alerts-hub {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .alert-item {
+            background: var(--bg-card);
+            border-left: 4px solid var(--dourado);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: var(--sombra);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert-item.danger { border-left-color: var(--erro); }
+        .alert-item.warning { border-left-color: var(--dourado); }
+        .alert-item.success { border-left-color: var(--sucesso); }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid var(--borda);
+            box-shadow: var(--sombra);
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 20px;
+            color: var(--dourado);
+        }
+
+        .modal-content input, .modal-content select {
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--borda);
+            background: var(--bg-principal);
+            cursor: pointer;
+            transition: var(--transicao);
+        }
+
+        .modal-buttons button:hover {
+            border-color: var(--dourado);
+            color: var(--dourado);
+        }
+
+        .config-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--borda);
+        }
+
+        .config-section h4 {
+            margin-bottom: 15px;
+            color: var(--dourado);
+        }
+
+        .config-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .config-btn {
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: 1px solid var(--borda);
+            background: var(--bg-principal);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transicao);
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .config-btn.danger {
+            color: var(--erro);
+            border-color: var(--erro);
+        }
+
+        .config-btn.danger:hover {
+            background: var(--erro);
+            color: white;
+        }
+
+        .config-btn.warning {
+            color: var(--dourado);
+            border-color: var(--dourado);
+        }
+
+        .config-btn.warning:hover {
+            background: var(--dourado);
+            color: white;
+        }
+
+        .config-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .juros-config {
+            background: var(--bg-principal);
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 10px;
+        }
+
+        .juros-config label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.85rem;
+        }
+
+        .goals-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid var(--borda);
+            box-shadow: var(--sombra);
+        }
+
+        .progress-bar {
+            background: var(--bg-principal);
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--dourado), #e5c090);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            padding: 22px;
+            border-radius: 20px;
+            border: 1px solid var(--borda);
+            box-shadow: var(--sombra);
+            transition: var(--transicao);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--dourado);
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--texto-secundario);
+        }
+
+        .metric-card.positive::before { background: var(--sucesso); }
+        .metric-card.negative::before { background: var(--erro); }
+        .metric-card.neutral::before { background: var(--dourado); }
+
+        .metric-title {
+            font-size: 0.85rem;
+            color: var(--texto-secundario);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .view-section {
+            display: none;
+        }
+
+        .view-section.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 25px;
+        }
+
+        .chart-box {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid var(--borda);
+            box-shadow: var(--sombra);
+            min-height: 280px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--texto-secundario);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid var(--borda);
+            background: var(--bg-principal);
+            color: var(--texto-principal);
+            font-size: 1rem;
+            transition: var(--transicao);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--dourado);
+            box-shadow: 0 0 0 3px rgba(197, 168, 128, 0.15);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #111, #222);
+            color: #fff;
+            border: 1px solid var(--dourado);
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: var(--transicao);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        [data-theme="dark"] .btn-primary {
+            background: linear-gradient(135deg, var(--dourado), #9e825a);
+            color: #000;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: scale(0.99);
+        }
+
+        .card-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .item-row {
+            background: var(--bg-card);
+            padding: 16px;
+            border-radius: 14px;
+            border: 1px solid var(--borda);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--sombra);
+            flex-wrap: wrap;
+        }
+
+        .item-info h4 {
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .item-info p {
+            font-size: 0.8rem;
+            color: var(--texto-secundario);
+        }
+
+        .item-meta {
+            text-align: right;
+        }
+
+        .item-amount {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .juros-info {
+            font-size: 0.75rem;
+            color: var(--dourado);
+            margin-top: 4px;
+        }
+
+        .quantidade-controle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .quantidade-controle button {
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            border: 1px solid var(--borda);
+            background: var(--bg-principal);
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: bold;
+            transition: var(--transicao);
+        }
+
+        .quantidade-controle button:hover {
+            border-color: var(--dourado);
+            color: var(--dourado);
+        }
+
+        .quantidade-controle span {
+            font-size: 1.2rem;
+            font-weight: bold;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .cliente-select {
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid var(--borda);
+            background: var(--bg-principal);
+            width: 100%;
+        }
+
+        .search-filter-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-filter-box input, .search-filter-box select {
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .payment-options {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .payment-option {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid var(--borda);
+            background: var(--bg-principal);
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            transition: var(--transicao);
+        }
+
+        .payment-option.selected {
+            border-color: var(--dourado);
+            background: var(--dourado);
+            color: white;
+        }
+
+        [data-theme="dark"] .payment-option.selected {
+            color: black;
+        }
+
+        .payment-option:hover {
+            border-color: var(--dourado);
+        }
+
+        .delete-prod-btn {
+            background: none;
+            border: none;
+            color: var(--erro);
+            cursor: pointer;
+            font-size: 1.1rem;
+            margin-left: 10px;
+            transition: var(--transicao);
+        }
+
+        .delete-prod-btn:hover {
+            transform: scale(1.1);
+        }
+
+        nav.nav-bottom {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border-top: 1px solid var(--borda);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 1000;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.03);
+        }
+
+        .nav-item {
+            background: none;
+            border: none;
+            color: var(--texto-secundario);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            gap: 4px;
+            width: 25%;
+            transition: var(--transicao);
+        }
+
+        .nav-item.active {
+            color: var(--dourado);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @media(min-width: 769px) {
+            body { padding-bottom: 0; padding-top: 0; }
+            header { padding: 20px 40px; }
+            .container { padding: 40px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <span class="nome-preto" id="nomePreto">NEXIS</span>
+            <span class="nome-dourado" id="nomeDourado">PREMIUM</span>
+        </div>
+        <div class="top-actions">
+            <button class="btn-settings" onclick="abrirConfiguracoes()" title="Configurações">⚙️</button>
+            <button class="btn-notif" onclick="toggleNotifHub()" title="Alertas">🔔</button>
+        </div>
+    </header>
+
+    <!-- Modal de Configurações -->
+    <div id="modalConfig" class="modal">
+        <div class="modal-content">
+            <h3>⚙️ Configurações da Loja</h3>
+            
+            <div class="config-section">
+                <h4>🏪 Personalização</h4>
+                <input type="text" id="configNomePreto" placeholder="Nome na cor preta" value="NEXIS">
+                <input type="text" id="configNomeDourado" placeholder="Nome na cor dourada" value="PREMIUM">
+                <div class="modal-buttons">
+                    <button onclick="salvarNomes()">💾 Salvar Nomes</button>
+                </div>
+            </div>
+
+            <div class="config-section">
+                <h4>💰 Configuração de Juros do Fiado</h4>
+                <div class="juros-config">
+                    <label>Taxa de Juros (% ao mês)</label>
+                    <input type="number" id="configJurosMensal" step="0.1" placeholder="Ex: 5" value="5">
+                    <label>Dias para começar a cobrar juros</label>
+                    <input type="number" id="configJurosDiasCarencia" placeholder="Ex: 7" value="7">
+                    <label>Tipo de Juros</label>
+                    <select id="configJurosTipo">
+                        <option value="simples">Juros Simples</option>
+                        <option value="composto">Juros Compostos</option>
+                    </select>
+                    <button class="config-btn warning" onclick="salvarConfigJuros()" style="margin-top: 10px;">Salvar Configurações de Juros</button>
+                </div>
+            </div>
+
+            <div class="config-section">
+                <h4>🎯 Meta Financeira</h4>
+                <input type="number" id="configMeta" step="1000" placeholder="Meta de faturamento" value="50000">
+                <button class="config-btn warning" onclick="alterarMeta()">Definir Meta</button>
+            </div>
+
+            <div class="config-section">
+                <h4>🌓 Aparência</h4>
+                <button class="config-btn" onclick="toggleTheme()">Alternar Tema (Claro/Escuro)</button>
+            </div>
+
+            <div class="config-section">
+                <h4>🗑️ Limpeza de Dados</h4>
+                <div class="config-buttons">
+                    <button class="config-btn danger" onclick="limparGastos()">Limpar Gastos</button>
+                    <button class="config-btn danger" onclick="limparVendas()">Limpar Vendas</button>
+                    <button class="config-btn danger" onclick="zerarMes()">🔄 Zerar Mês</button>
+                </div>
+                <small style="color: var(--texto-secundario); display: block; margin-top: 10px;">⚠️ Atenção: Estas ações não podem ser desfeitas!</small>
+            </div>
+
+            <div class="modal-buttons">
+                <button onclick="fecharConfiguracoes()">❌ Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="alerts-hub" id="alertsHub" style="display:none;"></div>
+
+        <section id="view-dashboard" class="view-section active">
+            <div class="goals-card">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-weight:600; font-size:0.9rem;">Meta Mensal de Faturamento</span>
+                    <span id="goalText" style="font-weight:700; color:var(--dourado);">R$ 0,00 / R$ 50.000,00</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" id="goalProgress"></div></div>
+            </div>
+
+            <div class="metrics-grid">
+                <div class="metric-card positive">
+                    <div class="metric-title">Faturamento Bruto</div>
+                    <div class="metric-value" id="dashFaturamento">R$ 0,00</div>
+                </div>
+                <div class="metric-card positive">
+                    <div class="metric-title">Lucro Líquido</div>
+                    <div class="metric-value" id="dashLucro" style="color:var(--sucesso);">R$ 0,00</div>
+                </div>
+                <div class="metric-card negative">
+                    <div class="metric-title">Gastos Totais</div>
+                    <div class="metric-value" id="dashGastos" style="color:var(--erro);">R$ 0,00</div>
+                </div>
+                <div class="metric-card neutral">
+                    <div class="metric-title">Carteira de Fiado</div>
+                    <div class="metric-value" id="dashFiado">R$ 0,00</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Vendas Realizadas</div>
+                    <div class="metric-value" id="dashQtdVendas">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Clientes Ativos</div>
+                    <div class="metric-value" id="dashQtdClientes">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Itens em Estoque</div>
+                    <div class="metric-value" id="dashEstoque">0</div>
+                </div>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-box"><canvas id="chartLucroGasto"></canvas></div>
+                <div class="chart-box"><canvas id="chartCategoriasDespesa"></canvas></div>
+                <div class="chart-box"><canvas id="chartEvolucaoVendas"></canvas></div>
+                <div class="chart-box"><canvas id="chartMaioresDevedores"></canvas></div>
+            </div>
+        </section>
+
+        <section id="view-gastos" class="view-section">
+            <div class="grid-2">
+                <div class="chart-box">
+                    <h3 style="margin-bottom:15px; color:var(--dourado);">Lançar Nova Despesa</h3>
+                    <form id="formGasto" onsubmit="salvarGasto(event)">
+                        <div class="form-group"><label>Nome do Gasto</label><input type="text" id="gastoNome" required placeholder=""></div>
+                        <div class="form-group"><label>Valor (R$)</label><input type="number" step="0.01" id="gastoValor" required placeholder="0.00"></div>
+                        <div class="form-group">
+                            <label>Categoria</label>
+                            <select id="gastoCategoria">
+                                <option value="Operacional">Operacional</option>
+                                <option value="Logística">Logística</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Infraestrutura">Infraestrutura</option>
+                                <option value="Outros">Outros</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>Data</label><input type="date" id="gastoData" required></div>
+                        <div class="form-group"><label>Observações</label><textarea id="gastoObs" rows="2"></textarea></div>
+                        <button type="submit" class="btn-primary">Registrar Gasto</button>
+                    </form>
+                </div>
+                <div>
+                    <h3 style="margin-bottom:15px;">Histórico de Despesas</h3>
+                    <div class="search-filter-box">
+                        <input type="text" id="buscaGasto" placeholder="Pesquisar..." oninput="renderizarGastos()">
+                        <select id="filtroCategoriaGasto" onchange="renderizarGastos()">
+                            <option value="">Todas</option>
+                            <option value="Operacional">Operacional</option>
+                            <option value="Logística">Logística</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Infraestrutura">Infraestrutura</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                    <div class="card-list" id="listaGastos"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-vendas" class="view-section">
+            <div class="grid-2">
+                <div class="chart-box">
+                    <h3 style="margin-bottom:15px; color:var(--dourado);">Cadastrar Produto</h3>
+                    <form id="formProduto" onsubmit="salvarProduto(event)">
+                        <div class="form-group"><label>Nome do Produto</label><input type="text" id="prodNome" required></div>
+                        <div class="form-group"><label>Custo Unitário (R$)</label><input type="number" step="0.01" id="prodCusto" required></div>
+                        <div class="form-group"><label>Preço de Venda (R$)</label><input type="number" step="0.01" id="prodVenda" required></div>
+                        <div class="form-group"><label>Quantidade em Estoque</label><input type="number" id="prodEstoque" required></div>
+                        <button type="submit" class="btn-primary">Adicionar Produto</button>
+                    </form>
+                </div>
+                <div>
+                    <h3 style="margin-bottom:15px;">Venda Rápida</h3>
+                    <div class="chart-box">
+                        <div class="form-group">
+                            <label>Cliente</label>
+                            <select id="clienteVendaSelect" class="cliente-select">
+                                <option value="avulso">Cliente Avulso (Sem cadastro)</option>
+                            </select>
+                        </div>
+                        <div id="listaProdutosVenda"></div>
+                        
+                        <div class="payment-options">
+                            <div class="payment-option selected" onclick="selecionarPagamento('avista')" id="optAvista">
+                                💵 À Vista
+                            </div>
+                            <div class="payment-option" onclick="selecionarPagamento('fiado')" id="optFiado">
+                                📝 Fiado
+                            </div>
+                        </div>
+                        
+                        <button class="btn-primary" onclick="finalizarVenda()" style="margin-top:15px;">Finalizar Venda</button>
+                    </div>
+                </div>
+            </div>
+            <h3>Produtos em Estoque</h3>
+            <div class="search-filter-box"><input type="text" id="buscaProduto" placeholder="Buscar produto..." oninput="renderizarProdutos()"></div>
+            <div class="card-list" id="listaProdutos"></div>
+        </section>
+
+        <section id="view-fiado" class="view-section">
+            <div class="grid-2">
+                <div class="chart-box">
+                    <h3 style="margin-bottom:15px; color:var(--dourado);">Novo Cliente</h3>
+                    <form id="formCliente" onsubmit="salvarCliente(event)">
+                        <div class="form-group"><label>Nome</label><input type="text" id="cliNome" required></div>
+                        <div class="form-group"><label>Telefone</label><input type="text" id="cliTelefone"></div>
+                        <button type="submit" class="btn-primary">Registrar Cliente</button>
+                    </form>
+                </div>
+                <div>
+                    <h3>Clientes e Débitos</h3>
+                    <div class="search-filter-box"><input type="text" id="buscaCliente" placeholder="Buscar cliente..." oninput="renderizarClientes()"></div>
+                    <div class="card-list" id="listaClientes"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <nav class="nav-bottom">
+        <button class="nav-item active" onclick="switchView('dashboard', this)">📊 Início</button>
+        <button class="nav-item" onclick="switchView('gastos', this)">💰 Gastos</button>
+        <button class="nav-item" onclick="switchView('vendas', this)">🛒 Vendas</button>
+        <button class="nav-item" onclick="switchView('fiado', this)">👥 Fiados</button>
+    </nav>
+
+    <script>
+        let db = JSON.parse(localStorage.getItem('nexis_db')) || {
+            gastos: [],
+            produtos: [],
+            clientes: [],
+            vendas: [],
+            metaFaturamento: 50000,
+            config: { 
+                tema: 'dark', 
+                nomePreto: 'NEXIS', 
+                nomeDourado: 'PREMIUM',
+                jurosMensal: 5,
+                jurosDiasCarencia: 7,
+                jurosTipo: 'simples'
+            },
+            carrinhoTemp: {}
+        };
+
+        let charts = {};
+        let carrinhoAtual = {};
+        let tipoPagamentoSelecionado = 'avista';
+
+        function selecionarPagamento(tipo) {
+            tipoPagamentoSelecionado = tipo;
+            document.getElementById('optAvista').classList.remove('selected');
+            document.getElementById('optFiado').classList.remove('selected');
+            if (tipo === 'avista') {
+                document.getElementById('optAvista').classList.add('selected');
+            } else {
+                document.getElementById('optFiado').classList.add('selected');
+            }
+        }
+
+        function salvarDB() {
+            localStorage.setItem('nexis_db', JSON.stringify(db));
+            atualizarDashboard();
+            renderizarGastos();
+            renderizarProdutos();
+            renderizarClientes();
+            atualizarGraficos();
+            carregarSelectClientes();
+        }
+
+        function toggleTheme() {
+            let current = document.body.getAttribute('data-theme');
+            let novo = current === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', novo);
+            db.config.tema = novo;
+            salvarDB();
+            adicionarNotificacao(`Tema alterado para ${novo === 'dark' ? 'escuro' : 'claro'}!`, 'success');
+        }
+
+        function abrirConfiguracoes() {
+            document.getElementById('modalConfig').style.display = 'flex';
+            document.getElementById('configNomePreto').value = db.config.nomePreto || 'NEXIS';
+            document.getElementById('configNomeDourado').value = db.config.nomeDourado || 'PREMIUM';
+            document.getElementById('configMeta').value = db.metaFaturamento || 50000;
+            document.getElementById('configJurosMensal').value = db.config.jurosMensal || 5;
+            document.getElementById('configJurosDiasCarencia').value = db.config.jurosDiasCarencia || 7;
+            document.getElementById('configJurosTipo').value = db.config.jurosTipo || 'simples';
+        }
+
+        function fecharConfiguracoes() {
+            document.getElementById('modalConfig').style.display = 'none';
+        }
+
+        function salvarNomes() {
+            db.config.nomePreto = document.getElementById('configNomePreto').value;
+            db.config.nomeDourado = document.getElementById('configNomeDourado').value;
+            document.getElementById('nomePreto').textContent = db.config.nomePreto;
+            document.getElementById('nomeDourado').textContent = db.config.nomeDourado;
+            salvarDB();
+            adicionarNotificacao('Nome da loja atualizado!', 'success');
+        }
+
+        function salvarConfigJuros() {
+            db.config.jurosMensal = parseFloat(document.getElementById('configJurosMensal').value);
+            db.config.jurosDiasCarencia = parseInt(document.getElementById('configJurosDiasCarencia').value);
+            db.config.jurosTipo = document.getElementById('configJurosTipo').value;
+            salvarDB();
+            adicionarNotificacao('Configurações de juros salvas!', 'success');
+            fecharConfiguracoes();
+        }
+
+        function alterarMeta() {
+            const novaMeta = parseFloat(document.getElementById('configMeta').value);
+            if (novaMeta && novaMeta > 0) {
+                db.metaFaturamento = novaMeta;
+                salvarDB();
+                adicionarNotificacao(`Meta alterada para R$ ${novaMeta.toFixed(2)}!`, 'success');
+                fecharConfiguracoes();
+            } else {
+                alert('Digite um valor válido para a meta!');
+            }
+        }
+
+        function calcularJurosDevedor(debito, dataInicial) {
+            if (!debito || debito <= 0) return 0;
+            
+            const diasCarencia = db.config.jurosDiasCarencia || 7;
+            const taxaMensal = (db.config.jurosMensal || 5) / 100;
+            const tipo = db.config.jurosTipo || 'simples';
+            
+            const dataAtual = new Date();
+            const dataDebito = new Date(dataInicial);
+            const diasDiff = Math.floor((dataAtual - dataDebito) / (1000 * 60 * 60 * 24));
+            
+            if (diasDiff <= diasCarencia) return 0;
+            
+            const meses = (diasDiff - diasCarencia) / 30;
+            
+            if (tipo === 'simples') {
+                return debito * taxaMensal * meses;
+            } else {
+                return debito * (Math.pow(1 + taxaMensal, meses) - 1);
+            }
+        }
+
+        function atualizarJurosClientes() {
+            let totalJuros = 0;
+            db.clientes.forEach(cliente => {
+                if (cliente.debito > 0 && cliente.dataUltimaCompra) {
+                    const jurosCalculados = calcularJurosDevedor(cliente.debito, cliente.dataUltimaCompra);
+                    if (jurosCalculados > 0) {
+                        cliente.jurosAplicados = jurosCalculados;
+                        totalJuros += jurosCalculados;
+                    }
+                }
+            });
+            return totalJuros;
+        }
+
+        function aplicarJurosCliente(clienteId) {
+            const cliente = db.clientes.find(c => c.id === clienteId);
+            if (cliente && cliente.debito > 0 && cliente.dataUltimaCompra) {
+                const juros = calcularJurosDevedor(cliente.debito, cliente.dataUltimaCompra);
+                if (juros > 0) {
+                    const confirmar = confirm(`Deseja aplicar R$ ${juros.toFixed(2)} de juros ao débito de ${cliente.nome}?\nDébito atual: R$ ${cliente.debito.toFixed(2)}`);
+                    if (confirmar) {
+                        cliente.debito += juros;
+                        cliente.ultimoJurosAplicado = new Date().toISOString();
+                        cliente.jurosAplicados = 0;
+                        salvarDB();
+                        adicionarNotificacao(`Juros de R$ ${juros.toFixed(2)} aplicado a ${cliente.nome}!`, 'success');
+                    }
+                } else {
+                    alert('Cliente ainda não tem juros acumulados ou está dentro do período de carência.');
+                }
+            } else {
+                alert('Cliente não possui débitos ou data de última compra registrada.');
+            }
+        }
+
+        function limparGastos() {
+            if(confirm("⚠️ Tem certeza que deseja apagar TODOS os gastos?\n\nEsta ação não pode ser desfeita!")) {
+                db.gastos = [];
+                salvarDB();
+                adicionarNotificacao("Todos os gastos foram apagados!", "success");
+                fecharConfiguracoes();
+            }
+        }
+
+        function limparVendas() {
+            if(confirm("⚠️ Tem certeza que deseja apagar TODAS as vendas?\n\nEsta ação não pode ser desfeita!")) {
+                db.vendas = [];
+                salvarDB();
+                adicionarNotificacao("Todas as vendas foram apagadas!", "success");
+                fecharConfiguracoes();
+            }
+        }
+
+        function zerarMes() {
+            if(confirm("🔄 ZERAR MÊS\n\nIsso irá apagar TODOS os gastos e TODAS as vendas.\n\nOs produtos, clientes e débitos serão mantidos.\n\nTem certeza?")) {
+                db.gastos = [];
+                db.vendas = [];
+                salvarDB();
+                adicionarNotificacao("Mês zerado com sucesso! Gastos e vendas foram removidos.", "success");
+                fecharConfiguracoes();
+            }
+        }
+
+        function toggleNotifHub() {
+            let hub = document.getElementById('alertsHub');
+            hub.style.display = hub.style.display === 'none' ? 'flex' : 'none';
+            if (hub.style.display === 'flex') gerarAlertas();
+        }
+
+        function gerarAlertas() {
+            const hub = document.getElementById('alertsHub');
+            const produtosBaixo = db.produtos.filter(p => p.estoque < 5);
+            const devedores = db.clientes.filter(c => (c.debito || 0) > 0);
+            const jurosTotal = atualizarJurosClientes();
+            
+            let alerts = [];
+            if (produtosBaixo.length) alerts.push({ type: 'warning', msg: `${produtosBaixo.length} produtos com estoque baixo` });
+            if (devedores.length) alerts.push({ type: 'danger', msg: `${devedores.length} clientes com débitos pendentes` });
+            if (jurosTotal > 0) alerts.push({ type: 'warning', msg: `Juros acumulados em débitos: R$ ${jurosTotal.toFixed(2)}` });
+            if (db.gastos.length === 0) alerts.push({ type: 'info', msg: 'Cadastre seus primeiros gastos para começar' });
+            
+            hub.innerHTML = alerts.map(a => `<div class="alert-item ${a.type}">${a.msg}</div>`).join('');
+        }
+
+        function switchView(view, btn) {
+            document.querySelectorAll('.view-section').forEach(section => section.classList.remove('active'));
+            document.getElementById(`view-${view}`).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            if (view === 'gastos') renderizarGastos();
+            if (view === 'vendas') { renderizarProdutos(); renderizarProdutosVenda(); carregarSelectClientes(); }
+            if (view === 'fiado') renderizarClientes();
+        }
+
+        function carregarSelectClientes() {
+            const select = document.getElementById('clienteVendaSelect');
+            if (select) {
+                let options = '<option value="avulso">Cliente Avulso (Sem cadastro)</option>';
+                options += db.clientes.map(c => `<option value="${c.id}">${c.nome} ${c.debito > 0 ? `(Débito: R$ ${c.debito.toFixed(2)})` : ''}</option>`).join('');
+                select.innerHTML = options;
+            }
+        }
+
+        function renderizarProdutosVenda() {
+            const container = document.getElementById('listaProdutosVenda');
+            if (!container) return;
+            
+            container.innerHTML = db.produtos.map(produto => {
+                const quantidade = carrinhoAtual[produto.id] || 0;
+                return `
+                    <div class="item-row" style="margin-bottom:10px;">
+                        <div><strong>${produto.nome}</strong><br><small>R$ ${produto.venda.toFixed(2)}</small></div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div class="quantidade-controle" style="margin:0;">
+                                <button onclick="alterarQuantidade(${produto.id}, -1)">-</button>
+                                <span id="qtd-${produto.id}">${quantidade}</span>
+                                <button onclick="alterarQuantidade(${produto.id}, 1)">+</button>
+                            </div>
+                            <button class="delete-prod-btn" onclick="deletarProduto(${produto.id})" title="Excluir produto">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function deletarProduto(produtoId) {
+            if(confirm('⚠️ Tem certeza que deseja excluir este produto permanentemente?\n\nEsta ação não pode ser desfeita!')) {
+                const produto = db.produtos.find(p => p.id === produtoId);
+                if(produto && produto.estoque > 0) {
+                    if(!confirm(`O produto "${produto.nome}" tem ${produto.estoque} unidades em estoque. Deseja mesmo excluir?`)) {
+                        return;
+                    }
+                }
+                db.produtos = db.produtos.filter(p => p.id !== produtoId);
+                delete carrinhoAtual[produtoId];
+                salvarDB();
+                renderizarProdutosVenda();
+                adicionarNotificacao('Produto excluído com sucesso!', 'success');
+            }
+        }
+
+        function alterarQuantidade(produtoId, delta) {
+            const produto = db.produtos.find(p => p.id === produtoId);
+            if (!produto) return;
+            
+            let novaQtd = (carrinhoAtual[produtoId] || 0) + delta;
+            if (novaQtd < 0) novaQtd = 0;
+            if (novaQtd > produto.estoque) {
+                adicionarNotificacao('Estoque insuficiente!', 'danger');
+                return;
+            }
+            
+            carrinhoAtual[produtoId] = novaQtd;
+            document.getElementById(`qtd-${produtoId}`).textContent = novaQtd;
+            
+            if (novaQtd === 0) delete carrinhoAtual[produtoId];
+        }
+
+        function finalizarVenda() {
+            const clienteId = document.getElementById('clienteVendaSelect').value;
+            
+            const itensVenda = [];
+            let valorTotal = 0;
+            let custoTotal = 0;
+            
+            for (const [produtoId, qtd] of Object.entries(carrinhoAtual)) {
+                if (qtd > 0) {
+                    const produto = db.produtos.find(p => p.id == produtoId);
+                    if (produto && produto.estoque >= qtd) {
+                        produto.estoque -= qtd;
+                        const subtotal = produto.venda * qtd;
+                        const custo = produto.custo * qtd;
+                        valorTotal += subtotal;
+                        custoTotal += custo;
+                        itensVenda.push({ produtoId: produto.id, nome: produto.nome, qtd, valor: subtotal });
+                    }
+                }
+            }
+            
+            if (itensVenda.length === 0) {
+                alert('Adicione pelo menos um item ao carrinho!');
+                return;
+            }
+            
+            let clienteNome = 'Cliente Avulso';
+            
+            if (tipoPagamentoSelecionado === 'fiado' && clienteId !== 'avulso') {
+                const cliente = db.clientes.find(c => c.id == clienteId);
+                if (cliente) {
+                    cliente.debito = (cliente.debito || 0) + valorTotal;
+                    cliente.dataUltimaCompra = new Date().toISOString();
+                    clienteNome = cliente.nome;
+                    adicionarNotificacao(`Venda de R$ ${valorTotal.toFixed(2)} registrada no fiado para ${cliente.nome}!`, 'success');
+                } else {
+                    alert('Cliente não encontrado!');
+                    return;
+                }
+            } else if (tipoPagamentoSelecionado === 'fiado' && clienteId === 'avulso') {
+                alert('Para vender no fiado, selecione um cliente cadastrado!');
+                return;
+            } else {
+                if (clienteId !== 'avulso') {
+                    const cliente = db.clientes.find(c => c.id == clienteId);
+                    if (cliente) clienteNome = cliente.nome;
+                }
+                adicionarNotificacao(`Venda à vista de R$ ${valorTotal.toFixed(2)} realizada com sucesso!`, 'success');
+            }
+            
+            db.vendas.push({
+                id: Date.now(),
+                clienteId: clienteId === 'avulso' ? null : clienteId,
+                clienteNome: clienteNome,
+                itens: itensVenda,
+                valorTotal: valorTotal,
+                custoTotal: custoTotal,
+                data: new Date().toISOString(),
+                tipo: tipoPagamentoSelecionado === 'fiado' ? 'fiado' : 'avista'
+            });
+            
+            carrinhoAtual = {};
+            salvarDB();
+            renderizarProdutosVenda();
+            carregarSelectClientes();
+        }
+
+        function atualizarDashboard() {
+            const faturamento = db.vendas.reduce((sum, v) => sum + v.valorTotal, 0);
+            const gastosTotal = db.gastos.reduce((sum, g) => sum + g.valor, 0);
+            const custoProdutos = db.vendas.reduce((sum, v) => sum + (v.custoTotal || 0), 0);
+            const lucro = faturamento - gastosTotal - custoProdutos;
+            const fiadoTotal = db.clientes.reduce((sum, c) => sum + (c.debito || 0), 0);
+            const totalEstoque = db.produtos.reduce((sum, p) => sum + p.estoque, 0);
+            const meta = db.metaFaturamento;
+            const percentual = Math.min((faturamento / meta) * 100, 100);
+
+            document.getElementById('dashFaturamento').innerHTML = `R$ ${faturamento.toFixed(2)}`;
+            document.getElementById('dashLucro').innerHTML = `R$ ${lucro.toFixed(2)}`;
+            document.getElementById('dashGastos').innerHTML = `R$ ${gastosTotal.toFixed(2)}`;
+            document.getElementById('dashFiado').innerHTML = `R$ ${fiadoTotal.toFixed(2)}`;
+            document.getElementById('dashQtdVendas').innerHTML = db.vendas.length;
+            document.getElementById('dashQtdClientes').innerHTML = db.clientes.length;
+            document.getElementById('dashEstoque').innerHTML = totalEstoque;
+            document.getElementById('goalText').innerHTML = `R$ ${faturamento.toFixed(2)} / R$ ${meta.toFixed(2)}`;
+            document.getElementById('goalProgress').style.width = `${percentual}%`;
+        }
+
+        function salvarGasto(event) {
+            event.preventDefault();
+            const gasto = {
+                id: Date.now(),
+                nome: document.getElementById('gastoNome').value,
+                valor: parseFloat(document.getElementById('gastoValor').value),
+                categoria: document.getElementById('gastoCategoria').value,
+                data: document.getElementById('gastoData').value,
+                obs: document.getElementById('gastoObs').value
+            };
+            db.gastos.push(gasto);
+            salvarDB();
+            document.getElementById('formGasto').reset();
+            adicionarNotificacao('Gasto registrado com sucesso!', 'success');
+        }
+
+        function renderizarGastos() {
+            const busca = document.getElementById('buscaGasto')?.value.toLowerCase() || '';
+            const categoria = document.getElementById('filtroCategoriaGasto')?.value || '';
+            let filtrados = db.gastos.filter(g => g.nome.toLowerCase().includes(busca));
+            if (categoria) filtrados = filtrados.filter(g => g.categoria === categoria);
+            
+            const lista = document.getElementById('listaGastos');
+            if (!lista) return;
+            
+            lista.innerHTML = filtrados.map(g => `
+                <div class="item-row">
+                    <div><strong>${g.nome}</strong><br><small>${g.categoria} - ${g.data || 'Sem data'}</small></div>
+                    <div class="item-meta"><strong>R$ ${g.valor.toFixed(2)}</strong><br><button onclick="deletarGasto(${g.id})" style="background:none; border:none; color:var(--erro); cursor:pointer;">🗑️</button></div>
+                </div>
+            `).join('');
+        }
+
+        function deletarGasto(id) {
+            if(confirm('Tem certeza que deseja excluir este gasto?')) {
+                db.gastos = db.gastos.filter(g => g.id !== id);
+                salvarDB();
+            }
+        }
+
+        function salvarProduto(event) {
+            event.preventDefault();
+            const produto = {
+                id: Date.now(),
+                nome: document.getElementById('prodNome').value,
+                custo: parseFloat(document.getElementById('prodCusto').value),
+                venda: parseFloat(document.getElementById('prodVenda').value),
+                estoque: parseInt(document.getElementById('prodEstoque').value)
+            };
+            db.produtos.push(produto);
+            salvarDB();
+            document.getElementById('formProduto').reset();
+            renderizarProdutosVenda();
+            adicionarNotificacao('Produto cadastrado!', 'success');
+        }
+
+        function renderizarProdutos() {
+            const busca = document.getElementById('buscaProduto')?.value.toLowerCase() || '';
+            const filtrados = db.produtos.filter(p => p.nome.toLowerCase().includes(busca));
+            const lista = document.getElementById('listaProdutos');
+            if (!lista) return;
+            
+            lista.innerHTML = filtrados.map(p => `
+                <div class="item-row">
+                    <div><strong>${p.nome}</strong><br><small>Custo: R$ ${p.custo.toFixed(2)} | Venda: R$ ${p.venda.toFixed(2)}</small></div>
+                    <div class="item-meta">
+                        <strong>Estoque: ${p.estoque}</strong><br>
+                        <button onclick="editarEstoque(${p.id})" style="background:none; border:none; color:var(--dourado); cursor:pointer; margin-top:5px;">✏️ Editar</button>
+                        <button onclick="deletarProduto(${p.id})" style="background:none; border:none; color:var(--erro); cursor:pointer; margin-top:5px; margin-left:5px;">🗑️ Excluir</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function editarEstoque(id) {
+            const novoEstoque = prompt('Nova quantidade em estoque:');
+            if (novoEstoque !== null) {
+                const produto = db.produtos.find(p => p.id === id);
+                if (produto) {
+                    produto.estoque = parseInt(novoEstoque);
+                    salvarDB();
+                    renderizarProdutosVenda();
+                }
+            }
+        }
+
+        function salvarCliente(event) {
+            event.preventDefault();
+            const cliente = {
+                id: Date.now(),
+                nome: document.getElementById('cliNome').value,
+                telefone: document.getElementById('cliTelefone').value,
+                debito: 0,
+                jurosAplicados: 0,
+                ultimoJurosAplicado: null,
+                dataUltimaCompra: null,
+                historico: []
+            };
+            db.clientes.push(cliente);
+            salvarDB();
+            document.getElementById('formCliente').reset();
+            adicionarNotificacao('Cliente registrado!', 'success');
+        }
+
+        function renderizarClientes() {
+            const busca = document.getElementById('buscaCliente')?.value.toLowerCase() || '';
+            const filtrados = db.clientes.filter(c => c.nome.toLowerCase().includes(busca));
+            const lista = document.getElementById('listaClientes');
+            if (!lista) return;
+            
+            lista.innerHTML = filtrados.map(c => {
+                let jurosInfo = '';
+                if (c.debito > 0 && c.dataUltimaCompra) {
+                    const juros = calcularJurosDevedor(c.debito, c.dataUltimaCompra);
+                    if (juros > 0) {
+                        jurosInfo = `<div class="juros-info">💰 Juros acumulados: R$ ${juros.toFixed(2)}</div>`;
+                    }
+                }
+                
+                return `
+                    <div class="item-row">
+                        <div>
+                            <strong>${c.nome}</strong><br>
+                            <small>${c.telefone || 'Sem telefone'}</small>
+                            ${jurosInfo}
+                        </div>
+                        <div class="item-meta">
+                            <strong style="color:var(--erro);">Débito: R$ ${(c.debito || 0).toFixed(2)}</strong>
+                            <div style="display:flex; gap:5px; margin-top:5px; flex-wrap:wrap;">
+                                <button onclick="adicionarDebito(${c.id})" style="padding:4px 8px; border-radius:6px; border:1px solid var(--borda); background:var(--bg-principal); cursor:pointer;">+ Débito</button>
+                                <button onclick="pagarDebito(${c.id})" style="padding:4px 8px; border-radius:6px; border:1px solid var(--borda); background:var(--bg-principal); cursor:pointer;">Pagar</button>
+                                <button onclick="aplicarJurosCliente(${c.id})" style="padding:4px 8px; border-radius:6px; border:1px solid var(--borda); background:var(--dourado); color:white; cursor:pointer;">📈 Juros</button>
+                                <button onclick="deletarCliente(${c.id})" style="padding:4px 8px; border-radius:6px; border:1px solid var(--borda); background:var(--bg-principal); cursor:pointer; color:var(--erro);">🗑️</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function deletarCliente(id) {
+            if (confirm('Tem certeza que deseja excluir este cliente?')) {
+                db.clientes = db.clientes.filter(c => c.id !== id);
+                salvarDB();
+                adicionarNotificacao('Cliente removido!', 'success');
+            }
+        }
+
+        function adicionarDebito(id) {
+            const valor = parseFloat(prompt('Valor do débito (R$):'));
+            if (valor && !isNaN(valor)) {
+                const cliente = db.clientes.find(c => c.id === id);
+                if (cliente) {
+                    cliente.debito = (cliente.debito || 0) + valor;
+                    if (!cliente.dataUltimaCompra) {
+                        cliente.dataUltimaCompra = new Date().toISOString();
+                    }
+                    salvarDB();
+                    adicionarNotificacao(`Débito de R$ ${valor.toFixed(2)} adicionado!`, 'success');
+                }
+            }
+        }
+
+        function pagarDebito(id) {
+            const valor = parseFloat(prompt('Valor a pagar (R$):'));
+            if (valor && !isNaN(valor)) {
+                const cliente = db.clientes.find(c => c.id === id);
+                if (cliente && cliente.debito >= valor) {
+                    cliente.debito -= valor;
+                    if (cliente.debito === 0) {
+                        cliente.dataUltimaCompra = null;
+                        cliente.jurosAplicados = 0;
+                    }
+                    salvarDB();
+                    adicionarNotificacao(`Pagamento de R$ ${valor.toFixed(2)} registrado!`, 'success');
+                } else {
+                    alert('Valor maior que o débito atual!');
+                }
+            }
+        }
+
+        function adicionarNotificacao(msg, tipo) {
+            const hub = document.getElementById('alertsHub');
+            if (hub.style.display === 'flex') {
+                const alertDiv = document.createElement('div');
+                alertDiv.className = `alert-item ${tipo}`;
+                alertDiv.innerHTML = `${msg}<button onclick="this.parentElement.remove()" style="background:none; border:none; cursor:pointer;">✖</button>`;
+                hub.prepend(alertDiv);
+                setTimeout(() => alertDiv.remove(), 5000);
+            }
+        }
+
+        function atualizarGraficos() {
+            const faturamento = db.vendas.reduce((sum, v) => sum + v.valorTotal, 0);
+            const gastosTotal = db.gastos.reduce((sum, g) => sum + g.valor, 0);
+            const custoProdutos = db.vendas.reduce((sum, v) => sum + (v.custoTotal || 0), 0);
+            const lucro = faturamento - gastosTotal - custoProdutos;
+            
+            if (charts.lucroGasto) charts.lucroGasto.destroy();
+            const ctx1 = document.getElementById('chartLucroGasto').getContext('2d');
+            charts.lucroGasto = new Chart(ctx1, {
+                type: 'bar',
+                data: { labels: ['Lucro', 'Gastos'], datasets: [{ label: 'Valores (R$)', data: [lucro, gastosTotal], backgroundColor: ['#2ec4b6', '#e71d36'] }] }
+            });
+            
+            const categorias = {};
+            db.gastos.forEach(g => { categorias[g.categoria] = (categorias[g.categoria] || 0) + g.valor; });
+            if (charts.categorias) charts.categorias.destroy();
+            const ctx2 = document.getElementById('chartCategoriasDespesa').getContext('2d');
+            charts.categorias = new Chart(ctx2, {
+                type: 'pie',
+                data: { labels: Object.keys(categorias), datasets: [{ data: Object.values(categorias), backgroundColor: ['#c5a880', '#2ec4b6', '#e71d36', '#f4a261', '#e9c46a'] }] }
+            });
+            
+            const vendasPorMes = {};
+            db.vendas.forEach(v => { const mes = v.data?.substring(0,7) || '2024-01'; vendasPorMes[mes] = (vendasPorMes[mes] || 0) + v.valorTotal; });
+            if (charts.vendas) charts.vendas.destroy();
+            const ctx3 = document.getElementById('chartEvolucaoVendas').getContext('2d');
+            charts.vendas = new Chart(ctx3, {
+                type: 'line',
+                data: { labels: Object.keys(vendasPorMes), datasets: [{ label: 'Vendas (R$)', data: Object.values(vendasPorMes), borderColor: '#c5a880', tension: 0.3 }] }
+            });
+            
+            const devedores = db.clientes.filter(c => (c.debito || 0) > 0).slice(0,5);
+            if (charts.devedores) charts.devedores.destroy();
+            const ctx4 = document.getElementById('chartMaioresDevedores').getContext('2d');
+            charts.devedores = new Chart(ctx4, {
+                type: 'bar',
+                data: { labels: devedores.map(c => c.nome), datasets: [{ label: 'Débito (R$)', data: devedores.map(c => c.debito), backgroundColor: '#e71d36' }] }
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            document.body.setAttribute('data-theme', db.config.tema || 'dark');
+            document.getElementById('nomePreto').textContent = db.config.nomePreto || 'NEXIS';
+            document.getElementById('nomeDourado').textContent = db.config.nomeDourado || 'PREMIUM';
+            atualizarJurosClientes();
+            atualizarDashboard();
+            renderizarGastos();
+            renderizarProdutos();
+            renderizarClientes();
+            atualizarGraficos();
+            document.getElementById('gastoData').valueAsDate = new Date();
+            carregarSelectClientes();
+            renderizarProdutosVenda();
+            selecionarPagamento('avista');
+        });
+    </script>
+</body>
+</html>
