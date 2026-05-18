@@ -56,7 +56,6 @@
             top: 0;
             z-index: 100;
             backdrop-filter: blur(10px);
-            background: rgba(var(--bg-card), 0.8);
         }
 
         .logo {
@@ -79,7 +78,7 @@
             align-items: center;
         }
 
-        .btn-theme, .btn-notif, .btn-settings {
+        .btn-settings {
             background: none;
             border: 1px solid var(--borda);
             color: var(--texto-principal);
@@ -95,7 +94,7 @@
             font-size: 1.2rem;
         }
 
-        .btn-theme:hover, .btn-notif:hover, .btn-settings:hover {
+        .btn-settings:hover {
             border-color: var(--dourado);
             color: var(--dourado);
         }
@@ -105,29 +104,6 @@
             margin: 0 auto;
             padding: 20px;
         }
-
-        .alerts-hub {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .alert-item {
-            background: var(--bg-card);
-            border-left: 4px solid var(--dourado);
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: var(--sombra);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            animation: slideIn 0.3s ease;
-        }
-
-        .alert-item.danger { border-left-color: var(--erro); }
-        .alert-item.warning { border-left-color: var(--dourado); }
-        .alert-item.success { border-left-color: var(--sucesso); }
 
         .modal {
             display: none;
@@ -152,16 +128,19 @@
             box-shadow: var(--sombra);
             max-height: 85vh;
             overflow-y: auto;
+            color: var(--texto-principal);
         }
 
-        .modal-content h3 {
-            margin-bottom: 20px;
+        .modal-content h3, .modal-content h4 {
             color: var(--dourado);
         }
 
         .modal-content input, .modal-content select {
             margin-bottom: 15px;
             width: 100%;
+            background: var(--bg-principal);
+            color: var(--texto-principal);
+            border: 1px solid var(--borda);
         }
 
         .modal-buttons {
@@ -178,6 +157,7 @@
             background: var(--bg-principal);
             cursor: pointer;
             transition: var(--transicao);
+            color: var(--texto-principal);
         }
 
         .modal-buttons button:hover {
@@ -212,6 +192,7 @@
             transition: var(--transicao);
             flex: 1;
             min-width: 120px;
+            color: var(--texto-principal);
         }
 
         .config-btn.danger {
@@ -249,6 +230,7 @@
             display: block;
             margin-bottom: 5px;
             font-size: 0.85rem;
+            color: var(--texto-secundario);
         }
 
         .goals-card {
@@ -291,6 +273,7 @@
             transition: var(--transicao);
             position: relative;
             overflow: hidden;
+            color: var(--texto-principal);
         }
 
         .metric-card:hover {
@@ -349,6 +332,11 @@
             border: 1px solid var(--borda);
             box-shadow: var(--sombra);
             min-height: 280px;
+        }
+
+        .chart-box h3 {
+            color: var(--dourado);
+            margin-bottom: 15px;
         }
 
         .form-group {
@@ -422,11 +410,30 @@
             align-items: center;
             box-shadow: var(--sombra);
             flex-wrap: wrap;
+            cursor: move;
+            transition: all 0.2s ease;
+        }
+
+        .item-row.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+
+        .drag-handle {
+            cursor: grab;
+            margin-right: 10px;
+            font-size: 1.2rem;
+            color: var(--texto-secundario);
+        }
+
+        .drag-handle:active {
+            cursor: grabbing;
         }
 
         .item-info h4 {
             font-size: 1rem;
             margin-bottom: 4px;
+            color: var(--texto-principal);
         }
 
         .item-info p {
@@ -436,11 +443,6 @@
 
         .item-meta {
             text-align: right;
-        }
-
-        .item-amount {
-            font-weight: 700;
-            font-size: 1rem;
         }
 
         .juros-info {
@@ -466,6 +468,7 @@
             font-size: 1.2rem;
             font-weight: bold;
             transition: var(--transicao);
+            color: var(--texto-principal);
         }
 
         .quantidade-controle button:hover {
@@ -478,6 +481,7 @@
             font-weight: bold;
             min-width: 40px;
             text-align: center;
+            color: var(--texto-principal);
         }
 
         .cliente-select {
@@ -487,6 +491,7 @@
             border: 1px solid var(--borda);
             background: var(--bg-principal);
             width: 100%;
+            color: var(--texto-principal);
         }
 
         .search-filter-box {
@@ -517,6 +522,7 @@
             text-align: center;
             font-weight: 600;
             transition: var(--transicao);
+            color: var(--texto-principal);
         }
 
         .payment-option.selected {
@@ -533,18 +539,30 @@
             border-color: var(--dourado);
         }
 
-        .delete-prod-btn {
-            background: none;
-            border: none;
-            color: var(--erro);
-            cursor: pointer;
-            font-size: 1.1rem;
-            margin-left: 10px;
-            transition: var(--transicao);
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
         }
 
-        .delete-prod-btn:hover {
-            transform: scale(1.1);
+        .checkbox-group input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .produto-duplo {
+            background: var(--bg-principal);
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 15px;
+            border-left: 3px solid var(--dourado);
         }
 
         nav.nav-bottom {
@@ -572,7 +590,7 @@
             font-weight: 600;
             cursor: pointer;
             gap: 4px;
-            width: 25%;
+            width: 20%;
             transition: var(--transicao);
         }
 
@@ -587,13 +605,26 @@
             margin-bottom: 25px;
         }
 
+        .edit-btn {
+            background: none;
+            border: 1px solid var(--dourado);
+            color: var(--dourado);
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            margin-left: 5px;
+            transition: var(--transicao);
+        }
+
+        .edit-btn:hover {
+            background: var(--dourado);
+            color: white;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(30px); }
-            to { opacity: 1; transform: translateX(0); }
         }
 
         @media(min-width: 769px) {
@@ -612,7 +643,6 @@
         </div>
         <div class="top-actions">
             <button class="btn-settings" onclick="abrirConfiguracoes()" title="Configurações">⚙️</button>
-            <button class="btn-notif" onclick="toggleNotifHub()" title="Alertas">🔔</button>
         </div>
     </header>
 
@@ -623,20 +653,25 @@
             
             <div class="config-section">
                 <h4>🏪 Personalização</h4>
-                <input type="text" id="configNomePreto" placeholder="Nome na cor preta" value="NEXIS">
-                <input type="text" id="configNomeDourado" placeholder="Nome na cor dourada" value="PREMIUM">
+                <input type="text" id="configNomePreto" placeholder="Nome na cor preta">
+                <input type="text" id="configNomeDourado" placeholder="Nome na cor dourada">
                 <div class="modal-buttons">
                     <button onclick="salvarNomes()">💾 Salvar Nomes</button>
                 </div>
             </div>
 
             <div class="config-section">
+                <h4>🌓 Aparência</h4>
+                <button class="config-btn" onclick="toggleTheme()">🌓 Alternar Tema (Claro/Escuro)</button>
+            </div>
+
+            <div class="config-section">
                 <h4>💰 Configuração de Juros do Fiado</h4>
                 <div class="juros-config">
                     <label>Taxa de Juros (% ao mês)</label>
-                    <input type="number" id="configJurosMensal" step="0.1" placeholder="Ex: 5" value="5">
+                    <input type="number" id="configJurosMensal" step="0.1">
                     <label>Dias para começar a cobrar juros</label>
-                    <input type="number" id="configJurosDiasCarencia" placeholder="Ex: 7" value="7">
+                    <input type="number" id="configJurosDiasCarencia">
                     <label>Tipo de Juros</label>
                     <select id="configJurosTipo">
                         <option value="simples">Juros Simples</option>
@@ -648,13 +683,8 @@
 
             <div class="config-section">
                 <h4>🎯 Meta Financeira</h4>
-                <input type="number" id="configMeta" step="1000" placeholder="Meta de faturamento" value="50000">
+                <input type="number" id="configMeta" step="1000" placeholder="Meta de faturamento">
                 <button class="config-btn warning" onclick="alterarMeta()">Definir Meta</button>
-            </div>
-
-            <div class="config-section">
-                <h4>🌓 Aparência</h4>
-                <button class="config-btn" onclick="toggleTheme()">Alternar Tema (Claro/Escuro)</button>
             </div>
 
             <div class="config-section">
@@ -673,9 +703,22 @@
         </div>
     </div>
 
-    <div class="container">
-        <div class="alerts-hub" id="alertsHub" style="display:none;"></div>
+    <!-- Modal de Edição de Produto -->
+    <div id="modalEditarProduto" class="modal">
+        <div class="modal-content">
+            <h3>✏️ Editar Produto</h3>
+            <input type="text" id="editProdNome" placeholder="Nome do Produto">
+            <input type="number" id="editProdCusto" step="0.01" placeholder="Preço de Custo (R$)">
+            <input type="number" id="editProdVenda" step="0.01" placeholder="Preço de Venda (R$)">
+            <input type="number" id="editProdEstoque" placeholder="Quantidade em Estoque">
+            <div class="modal-buttons">
+                <button onclick="salvarEdicaoProduto()">💾 Salvar Alterações</button>
+                <button onclick="fecharModalEdicao()">❌ Cancelar</button>
+            </div>
+        </div>
+    </div>
 
+    <div class="container">
         <section id="view-dashboard" class="view-section active">
             <div class="goals-card">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -764,45 +807,64 @@
             </div>
         </section>
 
-        <section id="view-vendas" class="view-section">
+        <section id="view-produtos" class="view-section">
             <div class="grid-2">
                 <div class="chart-box">
                     <h3 style="margin-bottom:15px; color:var(--dourado);">Cadastrar Produto</h3>
                     <form id="formProduto" onsubmit="salvarProduto(event)">
                         <div class="form-group"><label>Nome do Produto</label><input type="text" id="prodNome" required></div>
-                        <div class="form-group"><label>Custo Unitário (R$)</label><input type="number" step="0.01" id="prodCusto" required></div>
-                        <div class="form-group"><label>Preço de Venda (R$)</label><input type="number" step="0.01" id="prodVenda" required></div>
-                        <div class="form-group"><label>Quantidade em Estoque</label><input type="number" id="prodEstoque" required></div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="prodDuplo" onchange="toggleProdutoDuplo()">
+                            <label>Produto com variação (dois produtos com estoque compartilhado)</label>
+                        </div>
+                        <div id="produtoDuploDiv" style="display:none;" class="produto-duplo">
+                            <div class="form-group"><label>Nome da Variação 1</label><input type="text" id="prodNomeDuplo1" placeholder=""></div>
+                            <div class="form-group"><label>Preço Variação 1 (R$)</label><input type="number" step="0.01" id="prodPrecoDuplo1"></div>
+                            <div class="form-group"><label>Nome da Variação 2</label><input type="text" id="prodNomeDuplo2" placeholder=""></div>
+                            <div class="form-group"><label>Preço Variação 2 (R$)</label><input type="number" step="0.01" id="prodPrecoDuplo2"></div>
+                            <div class="form-group"><label>Custo Unitário (compartilhado)</label><input type="number" step="0.01" id="prodCustoDuplo" required></div>
+                            <div class="form-group"><label>Quantidade em Estoque (compartilhada)</label><input type="number" id="prodEstoqueDuplo" required></div>
+                        </div>
+                        <div id="produtoSimplesDiv">
+                            <div class="form-group"><label>Custo Unitário (R$)</label><input type="number" step="0.01" id="prodCusto"></div>
+                            <div class="form-group"><label>Preço de Venda (R$)</label><input type="number" step="0.01" id="prodVenda"></div>
+                            <div class="form-group"><label>Quantidade em Estoque</label><input type="number" id="prodEstoque"></div>
+                        </div>
                         <button type="submit" class="btn-primary">Adicionar Produto</button>
                     </form>
                 </div>
                 <div>
-                    <h3 style="margin-bottom:15px;">Venda Rápida</h3>
-                    <div class="chart-box">
-                        <div class="form-group">
-                            <label>Cliente</label>
-                            <select id="clienteVendaSelect" class="cliente-select">
-                                <option value="avulso">Cliente Avulso (Sem cadastro)</option>
-                            </select>
-                        </div>
-                        <div id="listaProdutosVenda"></div>
-                        
-                        <div class="payment-options">
-                            <div class="payment-option selected" onclick="selecionarPagamento('avista')" id="optAvista">
-                                💵 À Vista
-                            </div>
-                            <div class="payment-option" onclick="selecionarPagamento('fiado')" id="optFiado">
-                                📝 Fiado
-                            </div>
-                        </div>
-                        
-                        <button class="btn-primary" onclick="finalizarVenda()" style="margin-top:15px;">Finalizar Venda</button>
-                    </div>
+                    <h3 style="margin-bottom:15px;">Lista de Produtos Cadastrados</h3>
+                    <div class="search-filter-box"><input type="text" id="buscaProdutoLista" placeholder="Buscar produto..." oninput="renderizarListaProdutos()"></div>
+                    <div class="card-list" id="listaProdutosCadastrados"></div>
                 </div>
             </div>
-            <h3>Produtos em Estoque</h3>
-            <div class="search-filter-box"><input type="text" id="buscaProduto" placeholder="Buscar produto..." oninput="renderizarProdutos()"></div>
-            <div class="card-list" id="listaProdutos"></div>
+        </section>
+
+        <section id="view-vendas" class="view-section">
+            <div class="grid-2">
+                <div class="chart-box">
+                    <h3 style="margin-bottom:15px; color:var(--dourado);">Venda Rápida</h3>
+                    <div class="form-group">
+                        <label>Cliente</label>
+                        <select id="clienteVendaSelect" class="cliente-select">
+                            <option value="avulso">Cliente Avulso (Sem cadastro)</option>
+                        </select>
+                    </div>
+                    <div id="listaProdutosVenda"></div>
+                    
+                    <div class="payment-options">
+                        <div class="payment-option selected" onclick="selecionarPagamento('avista')" id="optAvista">
+                            💵 À Vista
+                        </div>
+                        <div class="payment-option" onclick="selecionarPagamento('fiado')" id="optFiado">
+                            📝 Fiado
+                        </div>
+                    </div>
+                    
+                    <button class="btn-primary" onclick="finalizarVenda()" style="margin-top:15px;">Finalizar Venda</button>
+                </div>
+            </div>
         </section>
 
         <section id="view-fiado" class="view-section">
@@ -827,6 +889,7 @@
     <nav class="nav-bottom">
         <button class="nav-item active" onclick="switchView('dashboard', this)">📊 Início</button>
         <button class="nav-item" onclick="switchView('gastos', this)">💰 Gastos</button>
+        <button class="nav-item" onclick="switchView('produtos', this)">📦 Produtos</button>
         <button class="nav-item" onclick="switchView('vendas', this)">🛒 Vendas</button>
         <button class="nav-item" onclick="switchView('fiado', this)">👥 Fiados</button>
     </nav>
@@ -838,6 +901,7 @@
             clientes: [],
             vendas: [],
             metaFaturamento: 50000,
+            ordemProdutos: [],
             config: { 
                 tema: 'dark', 
                 nomePreto: 'NEXIS', 
@@ -845,30 +909,28 @@
                 jurosMensal: 5,
                 jurosDiasCarencia: 7,
                 jurosTipo: 'simples'
-            },
-            carrinhoTemp: {}
+            }
         };
+
+        if (!db.ordemProdutos) db.ordemProdutos = db.produtos.map(p => p.id);
 
         let charts = {};
         let carrinhoAtual = {};
         let tipoPagamentoSelecionado = 'avista';
+        let produtoEditandoId = null;
 
-        function selecionarPagamento(tipo) {
-            tipoPagamentoSelecionado = tipo;
-            document.getElementById('optAvista').classList.remove('selected');
-            document.getElementById('optFiado').classList.remove('selected');
-            if (tipo === 'avista') {
-                document.getElementById('optAvista').classList.add('selected');
-            } else {
-                document.getElementById('optFiado').classList.add('selected');
-            }
+        function toggleProdutoDuplo() {
+            const isDuplo = document.getElementById('prodDuplo').checked;
+            document.getElementById('produtoDuploDiv').style.display = isDuplo ? 'block' : 'none';
+            document.getElementById('produtoSimplesDiv').style.display = isDuplo ? 'none' : 'block';
         }
 
         function salvarDB() {
             localStorage.setItem('nexis_db', JSON.stringify(db));
             atualizarDashboard();
             renderizarGastos();
-            renderizarProdutos();
+            renderizarListaProdutos();
+            renderizarProdutosVenda();
             renderizarClientes();
             atualizarGraficos();
             carregarSelectClientes();
@@ -880,7 +942,6 @@
             document.body.setAttribute('data-theme', novo);
             db.config.tema = novo;
             salvarDB();
-            adicionarNotificacao(`Tema alterado para ${novo === 'dark' ? 'escuro' : 'claro'}!`, 'success');
         }
 
         function abrirConfiguracoes() {
@@ -897,13 +958,41 @@
             document.getElementById('modalConfig').style.display = 'none';
         }
 
+        function abrirModalEdicao(produto) {
+            produtoEditandoId = produto.id;
+            document.getElementById('editProdNome').value = produto.nome;
+            document.getElementById('editProdCusto').value = produto.custo;
+            document.getElementById('editProdVenda').value = produto.venda;
+            document.getElementById('editProdEstoque').value = produto.estoque;
+            document.getElementById('modalEditarProduto').style.display = 'flex';
+        }
+
+        function fecharModalEdicao() {
+            document.getElementById('modalEditarProduto').style.display = 'none';
+            produtoEditandoId = null;
+        }
+
+        function salvarEdicaoProduto() {
+            if (produtoEditandoId) {
+                const produto = db.produtos.find(p => p.id === produtoEditandoId);
+                if (produto) {
+                    produto.nome = document.getElementById('editProdNome').value;
+                    produto.custo = parseFloat(document.getElementById('editProdCusto').value);
+                    produto.venda = parseFloat(document.getElementById('editProdVenda').value);
+                    produto.estoque = parseInt(document.getElementById('editProdEstoque').value);
+                    salvarDB();
+                    fecharModalEdicao();
+                }
+            }
+        }
+
         function salvarNomes() {
             db.config.nomePreto = document.getElementById('configNomePreto').value;
             db.config.nomeDourado = document.getElementById('configNomeDourado').value;
             document.getElementById('nomePreto').textContent = db.config.nomePreto;
             document.getElementById('nomeDourado').textContent = db.config.nomeDourado;
             salvarDB();
-            adicionarNotificacao('Nome da loja atualizado!', 'success');
+            fecharConfiguracoes();
         }
 
         function salvarConfigJuros() {
@@ -911,7 +1000,6 @@
             db.config.jurosDiasCarencia = parseInt(document.getElementById('configJurosDiasCarencia').value);
             db.config.jurosTipo = document.getElementById('configJurosTipo').value;
             salvarDB();
-            adicionarNotificacao('Configurações de juros salvas!', 'success');
             fecharConfiguracoes();
         }
 
@@ -920,7 +1008,6 @@
             if (novaMeta && novaMeta > 0) {
                 db.metaFaturamento = novaMeta;
                 salvarDB();
-                adicionarNotificacao(`Meta alterada para R$ ${novaMeta.toFixed(2)}!`, 'success');
                 fecharConfiguracoes();
             } else {
                 alert('Digite um valor válido para a meta!');
@@ -929,19 +1016,14 @@
 
         function calcularJurosDevedor(debito, dataInicial) {
             if (!debito || debito <= 0) return 0;
-            
             const diasCarencia = db.config.jurosDiasCarencia || 7;
             const taxaMensal = (db.config.jurosMensal || 5) / 100;
             const tipo = db.config.jurosTipo || 'simples';
-            
             const dataAtual = new Date();
             const dataDebito = new Date(dataInicial);
             const diasDiff = Math.floor((dataAtual - dataDebito) / (1000 * 60 * 60 * 24));
-            
             if (diasDiff <= diasCarencia) return 0;
-            
             const meses = (diasDiff - diasCarencia) / 30;
-            
             if (tipo === 'simples') {
                 return debito * taxaMensal * meses;
             } else {
@@ -949,88 +1031,42 @@
             }
         }
 
-        function atualizarJurosClientes() {
-            let totalJuros = 0;
-            db.clientes.forEach(cliente => {
-                if (cliente.debito > 0 && cliente.dataUltimaCompra) {
-                    const jurosCalculados = calcularJurosDevedor(cliente.debito, cliente.dataUltimaCompra);
-                    if (jurosCalculados > 0) {
-                        cliente.jurosAplicados = jurosCalculados;
-                        totalJuros += jurosCalculados;
-                    }
-                }
-            });
-            return totalJuros;
-        }
-
         function aplicarJurosCliente(clienteId) {
             const cliente = db.clientes.find(c => c.id === clienteId);
             if (cliente && cliente.debito > 0 && cliente.dataUltimaCompra) {
                 const juros = calcularJurosDevedor(cliente.debito, cliente.dataUltimaCompra);
                 if (juros > 0) {
-                    const confirmar = confirm(`Deseja aplicar R$ ${juros.toFixed(2)} de juros ao débito de ${cliente.nome}?\nDébito atual: R$ ${cliente.debito.toFixed(2)}`);
-                    if (confirmar) {
+                    if (confirm(`Deseja aplicar R$ ${juros.toFixed(2)} de juros ao débito de ${cliente.nome}?`)) {
                         cliente.debito += juros;
-                        cliente.ultimoJurosAplicado = new Date().toISOString();
-                        cliente.jurosAplicados = 0;
+                        cliente.dataUltimaCompra = new Date().toISOString();
                         salvarDB();
-                        adicionarNotificacao(`Juros de R$ ${juros.toFixed(2)} aplicado a ${cliente.nome}!`, 'success');
                     }
                 } else {
-                    alert('Cliente ainda não tem juros acumulados ou está dentro do período de carência.');
+                    alert('Cliente ainda não tem juros acumulados.');
                 }
-            } else {
-                alert('Cliente não possui débitos ou data de última compra registrada.');
             }
         }
 
         function limparGastos() {
-            if(confirm("⚠️ Tem certeza que deseja apagar TODOS os gastos?\n\nEsta ação não pode ser desfeita!")) {
+            if(confirm("⚠️ Tem certeza que deseja apagar TODOS os gastos?")) {
                 db.gastos = [];
                 salvarDB();
-                adicionarNotificacao("Todos os gastos foram apagados!", "success");
-                fecharConfiguracoes();
             }
         }
 
         function limparVendas() {
-            if(confirm("⚠️ Tem certeza que deseja apagar TODAS as vendas?\n\nEsta ação não pode ser desfeita!")) {
+            if(confirm("⚠️ Tem certeza que deseja apagar TODAS as vendas?")) {
                 db.vendas = [];
                 salvarDB();
-                adicionarNotificacao("Todas as vendas foram apagadas!", "success");
-                fecharConfiguracoes();
             }
         }
 
         function zerarMes() {
-            if(confirm("🔄 ZERAR MÊS\n\nIsso irá apagar TODOS os gastos e TODAS as vendas.\n\nOs produtos, clientes e débitos serão mantidos.\n\nTem certeza?")) {
+            if(confirm("🔄 ZERAR MÊS\n\nIsso irá apagar TODOS os gastos e TODAS as vendas.")) {
                 db.gastos = [];
                 db.vendas = [];
                 salvarDB();
-                adicionarNotificacao("Mês zerado com sucesso! Gastos e vendas foram removidos.", "success");
-                fecharConfiguracoes();
             }
-        }
-
-        function toggleNotifHub() {
-            let hub = document.getElementById('alertsHub');
-            hub.style.display = hub.style.display === 'none' ? 'flex' : 'none';
-            if (hub.style.display === 'flex') gerarAlertas();
-        }
-
-        function gerarAlertas() {
-            const hub = document.getElementById('alertsHub');
-            const produtosBaixo = db.produtos.filter(p => p.estoque < 5);
-            const devedores = db.clientes.filter(c => (c.debito || 0) > 0);
-            const jurosTotal = atualizarJurosClientes();
-            
-            let alerts = [];
-            if (produtosBaixo.length) alerts.push({ type: 'warning', msg: `${produtosBaixo.length} produtos com estoque baixo` });
-            if (devedores.length) alerts.push({ type: 'danger', msg: `${devedores.length} clientes com débitos pendentes` });
-            if (jurosTotal > 0) alerts.push({ type: 'warning', msg: `Juros acumulados em débitos: R$ ${jurosTotal.toFixed(2)}` });
-            if (db.gastos.length === 0) alerts.push({ type: 'info', msg: 'Cadastre seus primeiros gastos para começar' });
-            
-            hub.innerHTML = alerts.map(a => `<div class="alert-item ${a.type}">${a.msg}</div>`).join('');
         }
 
         function switchView(view, btn) {
@@ -1039,7 +1075,8 @@
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             if (btn) btn.classList.add('active');
             if (view === 'gastos') renderizarGastos();
-            if (view === 'vendas') { renderizarProdutos(); renderizarProdutosVenda(); carregarSelectClientes(); }
+            if (view === 'produtos') renderizarListaProdutos();
+            if (view === 'vendas') { renderizarProdutosVenda(); carregarSelectClientes(); }
             if (view === 'fiado') renderizarClientes();
         }
 
@@ -1052,64 +1089,153 @@
             }
         }
 
+        function selecionarPagamento(tipo) {
+            tipoPagamentoSelecionado = tipo;
+            document.getElementById('optAvista').classList.remove('selected');
+            document.getElementById('optFiado').classList.remove('selected');
+            if (tipo === 'avista') {
+                document.getElementById('optAvista').classList.add('selected');
+            } else {
+                document.getElementById('optFiado').classList.add('selected');
+            }
+        }
+
+        function salvarProduto(event) {
+            event.preventDefault();
+            const isDuplo = document.getElementById('prodDuplo').checked;
+            
+            if (isDuplo) {
+                const nome1 = document.getElementById('prodNomeDuplo1').value;
+                const nome2 = document.getElementById('prodNomeDuplo2').value;
+                const preco1 = parseFloat(document.getElementById('prodPrecoDuplo1').value);
+                const preco2 = parseFloat(document.getElementById('prodPrecoDuplo2').value);
+                const custo = parseFloat(document.getElementById('prodCustoDuplo').value);
+                const estoque = parseInt(document.getElementById('prodEstoqueDuplo').value);
+                const grupoId = Date.now();
+                
+                const produto1 = { id: Date.now(), nome: nome1, custo: custo, venda: preco1, estoque: estoque, grupoId: grupoId };
+                const produto2 = { id: Date.now() + 1, nome: nome2, custo: custo, venda: preco2, estoque: estoque, grupoId: grupoId };
+                
+                db.produtos.push(produto1, produto2);
+                db.ordemProdutos.push(produto1.id, produto2.id);
+            } else {
+                const produto = {
+                    id: Date.now(),
+                    nome: document.getElementById('prodNome').value,
+                    custo: parseFloat(document.getElementById('prodCusto').value),
+                    venda: parseFloat(document.getElementById('prodVenda').value),
+                    estoque: parseInt(document.getElementById('prodEstoque').value)
+                };
+                db.produtos.push(produto);
+                db.ordemProdutos.push(produto.id);
+            }
+            
+            document.getElementById('formProduto').reset();
+            document.getElementById('prodDuplo').checked = false;
+            toggleProdutoDuplo();
+            salvarDB();
+        }
+
+        function renderizarListaProdutos() {
+            const busca = document.getElementById('buscaProdutoLista')?.value.toLowerCase() || '';
+            const produtosOrdenados = db.ordemProdutos.map(id => db.produtos.find(p => p.id === id)).filter(p => p);
+            const filtrados = produtosOrdenados.filter(p => p.nome.toLowerCase().includes(busca));
+            const lista = document.getElementById('listaProdutosCadastrados');
+            if (!lista) return;
+            
+            lista.innerHTML = filtrados.map(p => `
+                <div class="item-row" draggable="true" data-id="${p.id}">
+                    <div style="display: flex; align-items: center; flex:1;">
+                        <span class="drag-handle">⋮⋮</span>
+                        <div class="item-info">
+                            <h4>${p.nome}</h4>
+                            <p>Custo: R$ ${p.custo.toFixed(2)} | Venda: R$ ${p.venda.toFixed(2)} | Estoque: ${p.estoque}</p>
+                        </div>
+                    </div>
+                    <div class="item-meta">
+                        <button class="edit-btn" onclick="abrirModalEdicao(${JSON.stringify(p).replace(/"/g, '&quot;')})">✏️ Editar</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            const items = document.querySelectorAll('#listaProdutosCadastrados .item-row');
+            items.forEach(item => {
+                item.addEventListener('dragstart', handleDragStart);
+                item.addEventListener('dragover', handleDragOver);
+                item.addEventListener('drop', handleDrop);
+                item.addEventListener('dragend', handleDragEnd);
+            });
+        }
+        
+        let dragSrcElement = null;
+        
+        function handleDragStart(e) {
+            dragSrcElement = this;
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+            this.classList.add('dragging');
+        }
+        
+        function handleDragOver(e) {
+            if (e.preventDefault) e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+        
+        function handleDrop(e) {
+            if (e.stopPropagation) e.stopPropagation();
+            if (dragSrcElement !== this) {
+                const srcId = parseInt(dragSrcElement.getAttribute('data-id'));
+                const destId = parseInt(this.getAttribute('data-id'));
+                const srcIndex = db.ordemProdutos.indexOf(srcId);
+                const destIndex = db.ordemProdutos.indexOf(destId);
+                if (srcIndex !== -1 && destIndex !== -1) {
+                    db.ordemProdutos.splice(srcIndex, 1);
+                    db.ordemProdutos.splice(destIndex, 0, srcId);
+                    salvarDB();
+                }
+            }
+            return false;
+        }
+        
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+            renderizarListaProdutos();
+        }
+
         function renderizarProdutosVenda() {
             const container = document.getElementById('listaProdutosVenda');
             if (!container) return;
             
-            container.innerHTML = db.produtos.map(produto => {
+            const produtosOrdenados = db.ordemProdutos.map(id => db.produtos.find(p => p.id === id)).filter(p => p);
+            container.innerHTML = produtosOrdenados.map(produto => {
                 const quantidade = carrinhoAtual[produto.id] || 0;
                 return `
                     <div class="item-row" style="margin-bottom:10px;">
                         <div><strong>${produto.nome}</strong><br><small>R$ ${produto.venda.toFixed(2)}</small></div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <div class="quantidade-controle" style="margin:0;">
-                                <button onclick="alterarQuantidade(${produto.id}, -1)">-</button>
-                                <span id="qtd-${produto.id}">${quantidade}</span>
-                                <button onclick="alterarQuantidade(${produto.id}, 1)">+</button>
-                            </div>
-                            <button class="delete-prod-btn" onclick="deletarProduto(${produto.id})" title="Excluir produto">🗑️</button>
+                        <div class="quantidade-controle">
+                            <button onclick="alterarQuantidade(${produto.id}, -1)">-</button>
+                            <span id="qtd-${produto.id}">${quantidade}</span>
+                            <button onclick="alterarQuantidade(${produto.id}, 1)">+</button>
                         </div>
                     </div>
                 `;
             }).join('');
         }
 
-        function deletarProduto(produtoId) {
-            if(confirm('⚠️ Tem certeza que deseja excluir este produto permanentemente?\n\nEsta ação não pode ser desfeita!')) {
-                const produto = db.produtos.find(p => p.id === produtoId);
-                if(produto && produto.estoque > 0) {
-                    if(!confirm(`O produto "${produto.nome}" tem ${produto.estoque} unidades em estoque. Deseja mesmo excluir?`)) {
-                        return;
-                    }
-                }
-                db.produtos = db.produtos.filter(p => p.id !== produtoId);
-                delete carrinhoAtual[produtoId];
-                salvarDB();
-                renderizarProdutosVenda();
-                adicionarNotificacao('Produto excluído com sucesso!', 'success');
-            }
-        }
-
         function alterarQuantidade(produtoId, delta) {
             const produto = db.produtos.find(p => p.id === produtoId);
             if (!produto) return;
-            
             let novaQtd = (carrinhoAtual[produtoId] || 0) + delta;
             if (novaQtd < 0) novaQtd = 0;
-            if (novaQtd > produto.estoque) {
-                adicionarNotificacao('Estoque insuficiente!', 'danger');
-                return;
-            }
-            
+            if (novaQtd > produto.estoque) return;
             carrinhoAtual[produtoId] = novaQtd;
             document.getElementById(`qtd-${produtoId}`).textContent = novaQtd;
-            
             if (novaQtd === 0) delete carrinhoAtual[produtoId];
         }
 
         function finalizarVenda() {
             const clienteId = document.getElementById('clienteVendaSelect').value;
-            
             const itensVenda = [];
             let valorTotal = 0;
             let custoTotal = 0;
@@ -1141,7 +1267,6 @@
                     cliente.debito = (cliente.debito || 0) + valorTotal;
                     cliente.dataUltimaCompra = new Date().toISOString();
                     clienteNome = cliente.nome;
-                    adicionarNotificacao(`Venda de R$ ${valorTotal.toFixed(2)} registrada no fiado para ${cliente.nome}!`, 'success');
                 } else {
                     alert('Cliente não encontrado!');
                     return;
@@ -1154,7 +1279,6 @@
                     const cliente = db.clientes.find(c => c.id == clienteId);
                     if (cliente) clienteNome = cliente.nome;
                 }
-                adicionarNotificacao(`Venda à vista de R$ ${valorTotal.toFixed(2)} realizada com sucesso!`, 'success');
             }
             
             db.vendas.push({
@@ -1171,7 +1295,6 @@
             carrinhoAtual = {};
             salvarDB();
             renderizarProdutosVenda();
-            carregarSelectClientes();
         }
 
         function atualizarDashboard() {
@@ -1208,7 +1331,6 @@
             db.gastos.push(gasto);
             salvarDB();
             document.getElementById('formGasto').reset();
-            adicionarNotificacao('Gasto registrado com sucesso!', 'success');
         }
 
         function renderizarGastos() {
@@ -1216,10 +1338,8 @@
             const categoria = document.getElementById('filtroCategoriaGasto')?.value || '';
             let filtrados = db.gastos.filter(g => g.nome.toLowerCase().includes(busca));
             if (categoria) filtrados = filtrados.filter(g => g.categoria === categoria);
-            
             const lista = document.getElementById('listaGastos');
             if (!lista) return;
-            
             lista.innerHTML = filtrados.map(g => `
                 <div class="item-row">
                     <div><strong>${g.nome}</strong><br><small>${g.categoria} - ${g.data || 'Sem data'}</small></div>
@@ -1229,55 +1349,9 @@
         }
 
         function deletarGasto(id) {
-            if(confirm('Tem certeza que deseja excluir este gasto?')) {
+            if(confirm('Tem certeza?')) {
                 db.gastos = db.gastos.filter(g => g.id !== id);
                 salvarDB();
-            }
-        }
-
-        function salvarProduto(event) {
-            event.preventDefault();
-            const produto = {
-                id: Date.now(),
-                nome: document.getElementById('prodNome').value,
-                custo: parseFloat(document.getElementById('prodCusto').value),
-                venda: parseFloat(document.getElementById('prodVenda').value),
-                estoque: parseInt(document.getElementById('prodEstoque').value)
-            };
-            db.produtos.push(produto);
-            salvarDB();
-            document.getElementById('formProduto').reset();
-            renderizarProdutosVenda();
-            adicionarNotificacao('Produto cadastrado!', 'success');
-        }
-
-        function renderizarProdutos() {
-            const busca = document.getElementById('buscaProduto')?.value.toLowerCase() || '';
-            const filtrados = db.produtos.filter(p => p.nome.toLowerCase().includes(busca));
-            const lista = document.getElementById('listaProdutos');
-            if (!lista) return;
-            
-            lista.innerHTML = filtrados.map(p => `
-                <div class="item-row">
-                    <div><strong>${p.nome}</strong><br><small>Custo: R$ ${p.custo.toFixed(2)} | Venda: R$ ${p.venda.toFixed(2)}</small></div>
-                    <div class="item-meta">
-                        <strong>Estoque: ${p.estoque}</strong><br>
-                        <button onclick="editarEstoque(${p.id})" style="background:none; border:none; color:var(--dourado); cursor:pointer; margin-top:5px;">✏️ Editar</button>
-                        <button onclick="deletarProduto(${p.id})" style="background:none; border:none; color:var(--erro); cursor:pointer; margin-top:5px; margin-left:5px;">🗑️ Excluir</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function editarEstoque(id) {
-            const novoEstoque = prompt('Nova quantidade em estoque:');
-            if (novoEstoque !== null) {
-                const produto = db.produtos.find(p => p.id === id);
-                if (produto) {
-                    produto.estoque = parseInt(novoEstoque);
-                    salvarDB();
-                    renderizarProdutosVenda();
-                }
             }
         }
 
@@ -1288,15 +1362,11 @@
                 nome: document.getElementById('cliNome').value,
                 telefone: document.getElementById('cliTelefone').value,
                 debito: 0,
-                jurosAplicados: 0,
-                ultimoJurosAplicado: null,
-                dataUltimaCompra: null,
-                historico: []
+                dataUltimaCompra: null
             };
             db.clientes.push(cliente);
             salvarDB();
             document.getElementById('formCliente').reset();
-            adicionarNotificacao('Cliente registrado!', 'success');
         }
 
         function renderizarClientes() {
@@ -1304,23 +1374,15 @@
             const filtrados = db.clientes.filter(c => c.nome.toLowerCase().includes(busca));
             const lista = document.getElementById('listaClientes');
             if (!lista) return;
-            
             lista.innerHTML = filtrados.map(c => {
                 let jurosInfo = '';
                 if (c.debito > 0 && c.dataUltimaCompra) {
                     const juros = calcularJurosDevedor(c.debito, c.dataUltimaCompra);
-                    if (juros > 0) {
-                        jurosInfo = `<div class="juros-info">💰 Juros acumulados: R$ ${juros.toFixed(2)}</div>`;
-                    }
+                    if (juros > 0) jurosInfo = `<div class="juros-info">💰 Juros: R$ ${juros.toFixed(2)}</div>`;
                 }
-                
                 return `
                     <div class="item-row">
-                        <div>
-                            <strong>${c.nome}</strong><br>
-                            <small>${c.telefone || 'Sem telefone'}</small>
-                            ${jurosInfo}
-                        </div>
+                        <div><strong>${c.nome}</strong><br><small>${c.telefone || 'Sem telefone'}</small>${jurosInfo}</div>
                         <div class="item-meta">
                             <strong style="color:var(--erro);">Débito: R$ ${(c.debito || 0).toFixed(2)}</strong>
                             <div style="display:flex; gap:5px; margin-top:5px; flex-wrap:wrap;">
@@ -1336,10 +1398,9 @@
         }
 
         function deletarCliente(id) {
-            if (confirm('Tem certeza que deseja excluir este cliente?')) {
+            if (confirm('Tem certeza?')) {
                 db.clientes = db.clientes.filter(c => c.id !== id);
                 salvarDB();
-                adicionarNotificacao('Cliente removido!', 'success');
             }
         }
 
@@ -1349,11 +1410,8 @@
                 const cliente = db.clientes.find(c => c.id === id);
                 if (cliente) {
                     cliente.debito = (cliente.debito || 0) + valor;
-                    if (!cliente.dataUltimaCompra) {
-                        cliente.dataUltimaCompra = new Date().toISOString();
-                    }
+                    if (!cliente.dataUltimaCompra) cliente.dataUltimaCompra = new Date().toISOString();
                     salvarDB();
-                    adicionarNotificacao(`Débito de R$ ${valor.toFixed(2)} adicionado!`, 'success');
                 }
             }
         }
@@ -1364,26 +1422,9 @@
                 const cliente = db.clientes.find(c => c.id === id);
                 if (cliente && cliente.debito >= valor) {
                     cliente.debito -= valor;
-                    if (cliente.debito === 0) {
-                        cliente.dataUltimaCompra = null;
-                        cliente.jurosAplicados = 0;
-                    }
+                    if (cliente.debito === 0) cliente.dataUltimaCompra = null;
                     salvarDB();
-                    adicionarNotificacao(`Pagamento de R$ ${valor.toFixed(2)} registrado!`, 'success');
-                } else {
-                    alert('Valor maior que o débito atual!');
-                }
-            }
-        }
-
-        function adicionarNotificacao(msg, tipo) {
-            const hub = document.getElementById('alertsHub');
-            if (hub.style.display === 'flex') {
-                const alertDiv = document.createElement('div');
-                alertDiv.className = `alert-item ${tipo}`;
-                alertDiv.innerHTML = `${msg}<button onclick="this.parentElement.remove()" style="background:none; border:none; cursor:pointer;">✖</button>`;
-                hub.prepend(alertDiv);
-                setTimeout(() => alertDiv.remove(), 5000);
+                } else alert('Valor maior que o débito!');
             }
         }
 
@@ -1431,16 +1472,16 @@
             document.body.setAttribute('data-theme', db.config.tema || 'dark');
             document.getElementById('nomePreto').textContent = db.config.nomePreto || 'NEXIS';
             document.getElementById('nomeDourado').textContent = db.config.nomeDourado || 'PREMIUM';
-            atualizarJurosClientes();
             atualizarDashboard();
             renderizarGastos();
-            renderizarProdutos();
+            renderizarListaProdutos();
+            renderizarProdutosVenda();
             renderizarClientes();
             atualizarGraficos();
             document.getElementById('gastoData').valueAsDate = new Date();
             carregarSelectClientes();
-            renderizarProdutosVenda();
             selecionarPagamento('avista');
+            toggleProdutoDuplo();
         });
     </script>
 </body>
