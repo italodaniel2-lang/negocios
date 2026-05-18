@@ -410,11 +410,14 @@
             align-items: center;
             box-shadow: var(--sombra);
             flex-wrap: wrap;
-            cursor: move;
             transition: all 0.2s ease;
         }
 
-        .item-row.dragging {
+        .drag-item-row {
+            cursor: move;
+        }
+
+        .drag-item-row.dragging {
             opacity: 0.5;
             cursor: grabbing;
         }
@@ -443,6 +446,9 @@
 
         .item-meta {
             text-align: right;
+            display: flex;
+            gap: 8px;
+            align-items: center;
         }
 
         .juros-info {
@@ -565,6 +571,47 @@
             border-left: 3px solid var(--dourado);
         }
 
+        .grupo-info {
+            font-size: 0.7rem;
+            color: var(--dourado);
+            margin-top: 3px;
+        }
+
+        .resumo-venda {
+            background: var(--bg-principal);
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 15px;
+            border: 1px solid var(--dourado);
+        }
+
+        .resumo-venda p {
+            margin: 5px 0;
+            font-size: 0.9rem;
+        }
+
+        .resumo-venda .total {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--dourado);
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--borda);
+        }
+
+        .cliente-info {
+            background: var(--bg-principal);
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+        }
+
+        .cliente-info .debito {
+            color: var(--erro);
+            font-weight: bold;
+        }
+
         nav.nav-bottom {
             position: fixed;
             bottom: 0;
@@ -605,20 +652,32 @@
             margin-bottom: 25px;
         }
 
-        .edit-btn {
+        .edit-btn, .delete-btn {
             background: none;
             border: 1px solid var(--dourado);
-            color: var(--dourado);
             padding: 4px 10px;
             border-radius: 6px;
             cursor: pointer;
             font-size: 0.75rem;
-            margin-left: 5px;
             transition: var(--transicao);
+        }
+
+        .edit-btn {
+            color: var(--dourado);
         }
 
         .edit-btn:hover {
             background: var(--dourado);
+            color: white;
+        }
+
+        .delete-btn {
+            color: var(--erro);
+            border-color: var(--erro);
+        }
+
+        .delete-btn:hover {
+            background: var(--erro);
             color: white;
         }
 
@@ -837,6 +896,7 @@
                     <h3 style="margin-bottom:15px;">Lista de Produtos Cadastrados</h3>
                     <div class="search-filter-box"><input type="text" id="buscaProdutoLista" placeholder="Buscar produto..." oninput="renderizarListaProdutos()"></div>
                     <div class="card-list" id="listaProdutosCadastrados"></div>
+                    <small style="color: var(--texto-secundario); display: block; margin-top: 10px;">💡 Dica: Arraste os produtos pelo ícone ⋮⋮ para reorganizar a ordem</small>
                 </div>
             </div>
         </section>
@@ -847,11 +907,24 @@
                     <h3 style="margin-bottom:15px; color:var(--dourado);">Venda Rápida</h3>
                     <div class="form-group">
                         <label>Cliente</label>
-                        <select id="clienteVendaSelect" class="cliente-select">
+                        <select id="clienteVendaSelect" class="cliente-select" onchange="atualizarInfoCliente()">
                             <option value="avulso">Cliente Avulso (Sem cadastro)</option>
                         </select>
                     </div>
+                    <div id="infoCliente" class="cliente-info" style="display: none;"></div>
                     <div id="listaProdutosVenda"></div>
+                    
+                    <div class="resumo-venda" id="resumoVenda">
+                        <p>📦 Itens no carrinho: <strong id="totalItens">0</strong></p>
+                        <p>💰 Subtotal: <strong id="subtotalVenda">R$ 0,00</strong></p>
+                        <div id="debitoInfo" style="display: none;">
+                            <p>📝 Débito atual do cliente: <strong id="debitoAtual" style="color: var(--erro);">R$ 0,00</strong></p>
+                            <p>➕ Novo débito após venda: <strong id="novoDebito" style="color: var(--dourado);">R$ 0,00</strong></p>
+                        </div>
+                        <div class="total" id="totalVenda">
+                            💵 TOTAL DA VENDA: <span id="totalVendaValor">R$ 0,00</span>
+                        </div>
+                    </div>
                     
                     <div class="payment-options">
                         <div class="payment-option selected" onclick="selecionarPagamento('avista')" id="optAvista">
@@ -976,13 +1049,38 @@
             if (produtoEditandoId) {
                 const produto = db.produtos.find(p => p.id === produtoEditandoId);
                 if (produto) {
+                    if (produto.grupoId) {
+                        const grupo = db.produtos.filter(p => p.grupoId === produto.grupoId);
+                        const novoEstoque = parseInt(document.getElementById('editProdEstoque').value);
+                        grupo.forEach(p => p.estoque = novoEstoque);
+                    }
                     produto.nome = document.getElementById('editProdNome').value;
                     produto.custo = parseFloat(document.getElementById('editProdCusto').value);
                     produto.venda = parseFloat(document.getElementById('editProdVenda').value);
-                    produto.estoque = parseInt(document.getElementById('editProdEstoque').value);
+                    if (!produto.grupoId) {
+                        produto.estoque = parseInt(document.getElementById('editProdEstoque').value);
+                    }
                     salvarDB();
                     fecharModalEdicao();
                 }
+            }
+        }
+
+        function deletarProduto(produtoId) {
+            const produto = db.produtos.find(p => p.id === produtoId);
+            if (produto && confirm(`⚠️ Tem certeza que deseja excluir o produto "${produto.nome}" permanentemente?\n\nEsta ação não pode ser desfeita!`)) {
+                if (produto.grupoId) {
+                    db.produtos = db.produtos.filter(p => p.grupoId !== produto.grupoId);
+                    db.ordemProdutos = db.ordemProdutos.filter(id => {
+                        const p = db.produtos.find(prod => prod.id === id);
+                        return p && p.grupoId !== produto.grupoId;
+                    });
+                } else {
+                    db.ordemProdutos = db.ordemProdutos.filter(id => id !== produtoId);
+                    db.produtos = db.produtos.filter(p => p.id !== produtoId);
+                }
+                delete carrinhoAtual[produtoId];
+                salvarDB();
             }
         }
 
@@ -1076,7 +1174,7 @@
             if (btn) btn.classList.add('active');
             if (view === 'gastos') renderizarGastos();
             if (view === 'produtos') renderizarListaProdutos();
-            if (view === 'vendas') { renderizarProdutosVenda(); carregarSelectClientes(); }
+            if (view === 'vendas') { renderizarProdutosVenda(); carregarSelectClientes(); atualizarResumoVenda(); }
             if (view === 'fiado') renderizarClientes();
         }
 
@@ -1089,6 +1187,64 @@
             }
         }
 
+        function atualizarInfoCliente() {
+            const clienteId = document.getElementById('clienteVendaSelect').value;
+            const infoDiv = document.getElementById('infoCliente');
+            const debitoInfo = document.getElementById('debitoInfo');
+            
+            if (clienteId !== 'avulso') {
+                const cliente = db.clientes.find(c => c.id == clienteId);
+                if (cliente && cliente.debito > 0) {
+                    infoDiv.style.display = 'block';
+                    infoDiv.innerHTML = `<span class="debito">💳 Débito atual: R$ ${cliente.debito.toFixed(2)}</span>`;
+                } else {
+                    infoDiv.style.display = 'none';
+                }
+            } else {
+                infoDiv.style.display = 'none';
+                debitoInfo.style.display = 'none';
+            }
+            atualizarResumoVenda();
+        }
+
+        function calcularSubtotal() {
+            let subtotal = 0;
+            let totalItens = 0;
+            for (const [produtoId, qtd] of Object.entries(carrinhoAtual)) {
+                if (qtd > 0) {
+                    const produto = db.produtos.find(p => p.id == produtoId);
+                    if (produto) {
+                        subtotal += produto.venda * qtd;
+                        totalItens += qtd;
+                    }
+                }
+            }
+            return { subtotal, totalItens };
+        }
+
+        function atualizarResumoVenda() {
+            const { subtotal, totalItens } = calcularSubtotal();
+            const clienteId = document.getElementById('clienteVendaSelect').value;
+            const debitoInfo = document.getElementById('debitoInfo');
+            
+            document.getElementById('totalItens').textContent = totalItens;
+            document.getElementById('subtotalVenda').innerHTML = `R$ ${subtotal.toFixed(2)}`;
+            document.getElementById('totalVendaValor').innerHTML = `R$ ${subtotal.toFixed(2)}`;
+            
+            if (clienteId !== 'avulso' && tipoPagamentoSelecionado === 'fiado') {
+                const cliente = db.clientes.find(c => c.id == clienteId);
+                if (cliente) {
+                    debitoInfo.style.display = 'block';
+                    const debitoAtual = cliente.debito || 0;
+                    const novoDebito = debitoAtual + subtotal;
+                    document.getElementById('debitoAtual').innerHTML = `R$ ${debitoAtual.toFixed(2)}`;
+                    document.getElementById('novoDebito').innerHTML = `R$ ${novoDebito.toFixed(2)}`;
+                }
+            } else {
+                debitoInfo.style.display = 'none';
+            }
+        }
+
         function selecionarPagamento(tipo) {
             tipoPagamentoSelecionado = tipo;
             document.getElementById('optAvista').classList.remove('selected');
@@ -1098,6 +1254,7 @@
             } else {
                 document.getElementById('optFiado').classList.add('selected');
             }
+            atualizarResumoVenda();
         }
 
         function salvarProduto(event) {
@@ -1143,22 +1300,31 @@
             const lista = document.getElementById('listaProdutosCadastrados');
             if (!lista) return;
             
-            lista.innerHTML = filtrados.map(p => `
-                <div class="item-row" draggable="true" data-id="${p.id}">
-                    <div style="display: flex; align-items: center; flex:1;">
-                        <span class="drag-handle">⋮⋮</span>
-                        <div class="item-info">
-                            <h4>${p.nome}</h4>
-                            <p>Custo: R$ ${p.custo.toFixed(2)} | Venda: R$ ${p.venda.toFixed(2)} | Estoque: ${p.estoque}</p>
+            lista.innerHTML = filtrados.map(p => {
+                let grupoInfo = '';
+                if (p.grupoId) {
+                    const grupo = db.produtos.filter(prod => prod.grupoId === p.grupoId);
+                    grupoInfo = `<div class="grupo-info">📦 Estoque compartilhado (${grupo.length} variações)</div>`;
+                }
+                return `
+                    <div class="item-row drag-item-row" draggable="true" data-id="${p.id}">
+                        <div style="display: flex; align-items: center; flex:1;">
+                            <span class="drag-handle">⋮⋮</span>
+                            <div class="item-info">
+                                <h4>${p.nome}</h4>
+                                <p>Custo: R$ ${p.custo.toFixed(2)} | Venda: R$ ${p.venda.toFixed(2)} | Estoque: ${p.estoque}</p>
+                                ${grupoInfo}
+                            </div>
+                        </div>
+                        <div class="item-meta">
+                            <button class="edit-btn" onclick="abrirModalEdicao(${JSON.stringify(p).replace(/"/g, '&quot;')})">✏️ Editar</button>
+                            <button class="delete-btn" onclick="deletarProduto(${p.id})">🗑️ Excluir</button>
                         </div>
                     </div>
-                    <div class="item-meta">
-                        <button class="edit-btn" onclick="abrirModalEdicao(${JSON.stringify(p).replace(/"/g, '&quot;')})">✏️ Editar</button>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
             
-            const items = document.querySelectorAll('#listaProdutosCadastrados .item-row');
+            const items = document.querySelectorAll('#listaProdutosCadastrados .drag-item-row');
             items.forEach(item => {
                 item.addEventListener('dragstart', handleDragStart);
                 item.addEventListener('dragover', handleDragOver);
@@ -1210,9 +1376,17 @@
             const produtosOrdenados = db.ordemProdutos.map(id => db.produtos.find(p => p.id === id)).filter(p => p);
             container.innerHTML = produtosOrdenados.map(produto => {
                 const quantidade = carrinhoAtual[produto.id] || 0;
+                let grupoInfo = '';
+                if (produto.grupoId) {
+                    grupoInfo = `<div class="grupo-info" style="font-size: 0.65rem;">📦 Compartilhado</div>`;
+                }
                 return `
                     <div class="item-row" style="margin-bottom:10px;">
-                        <div><strong>${produto.nome}</strong><br><small>R$ ${produto.venda.toFixed(2)}</small></div>
+                        <div>
+                            <strong>${produto.nome}</strong>
+                            ${grupoInfo}
+                            <br><small>R$ ${produto.venda.toFixed(2)}</small>
+                        </div>
                         <div class="quantidade-controle">
                             <button onclick="alterarQuantidade(${produto.id}, -1)">-</button>
                             <span id="qtd-${produto.id}">${quantidade}</span>
@@ -1226,12 +1400,17 @@
         function alterarQuantidade(produtoId, delta) {
             const produto = db.produtos.find(p => p.id === produtoId);
             if (!produto) return;
+            
+            let estoqueDisponivel = produto.estoque;
             let novaQtd = (carrinhoAtual[produtoId] || 0) + delta;
             if (novaQtd < 0) novaQtd = 0;
-            if (novaQtd > produto.estoque) return;
+            if (novaQtd > estoqueDisponivel) return;
+            
             carrinhoAtual[produtoId] = novaQtd;
             document.getElementById(`qtd-${produtoId}`).textContent = novaQtd;
             if (novaQtd === 0) delete carrinhoAtual[produtoId];
+            
+            atualizarResumoVenda();
         }
 
         function finalizarVenda() {
@@ -1244,7 +1423,12 @@
                 if (qtd > 0) {
                     const produto = db.produtos.find(p => p.id == produtoId);
                     if (produto && produto.estoque >= qtd) {
-                        produto.estoque -= qtd;
+                        if (produto.grupoId) {
+                            const grupo = db.produtos.filter(p => p.grupoId === produto.grupoId);
+                            grupo.forEach(p => p.estoque -= qtd);
+                        } else {
+                            produto.estoque -= qtd;
+                        }
                         const subtotal = produto.venda * qtd;
                         const custo = produto.custo * qtd;
                         valorTotal += subtotal;
@@ -1295,6 +1479,14 @@
             carrinhoAtual = {};
             salvarDB();
             renderizarProdutosVenda();
+            atualizarResumoVenda();
+            atualizarInfoCliente();
+            
+            if (tipoPagamentoSelecionado === 'fiado') {
+                alert(`✅ Venda finalizada!\n\nCliente: ${clienteNome}\nTotal: R$ ${valorTotal.toFixed(2)}\nValor adicionado ao débito.`);
+            } else {
+                alert(`✅ Venda finalizada!\n\nCliente: ${clienteNome}\nTotal: R$ ${valorTotal.toFixed(2)}\nPagamento à vista realizado.`);
+            }
         }
 
         function atualizarDashboard() {
@@ -1303,7 +1495,24 @@
             const custoProdutos = db.vendas.reduce((sum, v) => sum + (v.custoTotal || 0), 0);
             const lucro = faturamento - gastosTotal - custoProdutos;
             const fiadoTotal = db.clientes.reduce((sum, c) => sum + (c.debito || 0), 0);
-            const totalEstoque = db.produtos.reduce((sum, p) => sum + p.estoque, 0);
+            
+            // CORREÇÃO: Calcular estoque sem duplicar produtos compartilhados
+            const gruposProcessados = new Set();
+            let totalEstoque = 0;
+            
+            db.produtos.forEach(produto => {
+                if (produto.grupoId) {
+                    // Se for produto com grupo, só conta uma vez por grupo
+                    if (!gruposProcessados.has(produto.grupoId)) {
+                        gruposProcessados.add(produto.grupoId);
+                        totalEstoque += produto.estoque;
+                    }
+                } else {
+                    // Produto normal
+                    totalEstoque += produto.estoque;
+                }
+            });
+            
             const meta = db.metaFaturamento;
             const percentual = Math.min((faturamento / meta) * 100, 100);
 
@@ -1367,6 +1576,7 @@
             db.clientes.push(cliente);
             salvarDB();
             document.getElementById('formCliente').reset();
+            alert(`Cliente ${cliente.nome} registrado com sucesso!`);
         }
 
         function renderizarClientes() {
